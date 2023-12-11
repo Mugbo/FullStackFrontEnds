@@ -1,74 +1,62 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { Component } from "react";
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      book: [],
-    };
-  }
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 
-  API_URL = "http://http://localhost:3000/";
+  function App() {
+    const [book , setBook] = useState("")
+    const[allBooks, setAllBooks] = useState([])
+    useEffect(() =>{
+      getAllBooks();
+    }, []);
 
-  componentDidMount() {
-    this.refreshBooks();
-  }
+    const addClick= () => {
+      axios.post('http://localhost:5001/AddBook', {book: book})
+      .then(result =>  console.log("Book Added",result))
+      .catch(err => console.log(err))
+      getAllBooks();
+    }
 
-  async refreshBooks() {
-    fetch(this.API_URL + "api/bookapp/GetBook")
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({ book: data });
-      });
-  }
+    const getAllBooks = () => {
+      axios.get('http://localhost:5001/GetBook')
+      .then((result) => setAllBooks(result.data))
+      .catch(err => console.log(err))
+    }
 
-  async addClick() {
-    var newBook = document.getElementById("newBook").value;
-    const data = new FormData();
-    data.append("newBook", newBook);
-
-    fetch(this.API_URL + "api/bookapp/AddBook", {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => res.json())
+    const DeleteBook = (id) => {
+      axios.delete('http://localhost:5001/DeleteBook/' + id)
       .then((result) => {
-        alert(result);
-        this.refreshBook();
-      });
-  }
+        setAllBooks(result.data)
+      })
+      .catch(err => console.log(err))
+     
+    }
 
-  async deteleClick(id) {
-    fetch(this.API_URL + "fullstackproject/bookapp/DeleteBook?id=" + id, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        alert(result);
-        this.refreshBook();
-      });
-  }
+    
+return(
+  
+  <div className="AddBook_Container">
+  <h1>Book App</h1>
+  <input type="text" placeholder="Enter Book Title" onChange={(e) => setBook(e.target.value)}/>
+  <button type="button" onClick={addClick}>Add Book</button>
 
-  render() {
-    const { book } = this.state;
-    return (
-      <div className="App">
-        <h2> Todo App</h2>
-        <input id="newBook" />
-        &nbsp;
-        <button onClick={() => this.addClick()}>Add book</button>
-        {book.map((book) => (
-          <p>
-            <b>* {book.desciption}</b>&nbsp;
-            <button onClick={() => this.deleteClick(book.id)}>
-              delete Book
-            </button>
-          </p>
-        ))}
+  <div className="GetAllBooks_Container">
+  <h2>All Book</h2>
+  {
+    allBooks.map((book) => (
+      <div key={book._id}>
+      <p>{book.book}</p>
+      <button type="button" onClick={() => DeleteBook(book._id)}>Delete Book</button>
       </div>
-    );
-  }
+))}
+  <div>
+
+  
+  </div>
+  </div>
+  </div>
+
+)
 }
 
 export default App;
