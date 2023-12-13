@@ -1,14 +1,12 @@
-import "./App.css";
+// App.js
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
-import React from "react";
-import Wrapper from "./components/Wrapper";
-import { Button } from "./components/ui/Button";
+import "./App.css"
 
 function App() {
   const [book, setBook] = useState("");
   const [allBooks, setAllBooks] = useState([]);
+
   useEffect(() => {
     getAllBooks();
   }, []);
@@ -28,7 +26,7 @@ function App() {
       .catch((err) => console.log(err));
   };
 
-  const DeleteBook = (id) => {
+  const deleteBook = (id) => {
     axios
       .delete("http://localhost:5001/DeleteBook/" + id)
       .then((result) => {
@@ -38,39 +36,36 @@ function App() {
   };
 
   return (
-    <>
-      <Wrapper>
-        <div>
-          <div className="py-20 mx-auto text-centre flex flex-col items-center max-w-3xl">
-          <h1 className="text-4xl font-bold tracking-tight text-black-900">
-            {""}
-            <span className="text-red-600">Welcome to the e-lib</span>
-          </h1>
-            <input
-              type="text"
-              placeholder="Enter Book Title"
-              onChange={(e) => setBook(e.target.value)}
-            />
-            <Button onClick={addClick}>Add Book &rarr;</Button>
-            <button type="button" onClick={addClick}>
-              Add Book
+    <div className="app-container">
+      <div className="welcome-container">
+        <h1 className="welcome-text">Welcome to the e-lib</h1>
+        <input
+          type="text"
+          className="input-box"
+          placeholder="Enter Book Title"
+          onChange={(e) => setBook(e.target.value)}
+        />
+        <button type="button" className="add-button" onClick={addClick}>
+          Add Book
+        </button>
+      </div>
+      <div className="all-books-container">
+        <h2 className="all-books-heading">All Books</h2>
+        {allBooks.map((book) => (
+          <div key={book._id} className="book-item">
+            <p className="book-title">{book.book}</p>
+            <button
+              type="button"
+              className="delete-button"
+              onClick={() => deleteBook(book._id)}
+            >
+              Delete Book
             </button>
           </div>
-          <div className="GetAllBooks_Container">
-            <h2>All Book</h2>
-            {allBooks.map((book) => (
-              <div key={book._id}>
-                <p>{book.book}</p>
-                <button type="button" onClick={() => DeleteBook(book._id)}>
-                  Delete Book
-                </button>
-              </div>
-            ))}
-            <div></div>
-          </div>
-        </div>
-      </Wrapper>
-    </>
+        ))}
+        <div></div>
+      </div>
+    </div>
   );
 }
 
