@@ -1,4 +1,3 @@
-// App.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
@@ -76,9 +75,6 @@ function App() {
             </div>
           ))
         )}
-
-        {/* This empty div seems unnecessary */}
-        {/* <div></div> */}
       </div>
     </div>
   );
