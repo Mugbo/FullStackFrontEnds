@@ -39,6 +39,10 @@ function App() {
       })
       .catch((err) => console.log(err));
   };
+  const update = () => {
+    deleteBook();
+    UpdateBook();
+  };
 
   return (
     <div className="app-container">
@@ -61,7 +65,7 @@ function App() {
         ) : (
           allBooks.map((book) => (
             <div className="task" key={book._id}>
-              <div className="checkbox" onClick={() => UpdateBook(book._id)}>
+              <div className="checkbox" onClick={update()}>
                 <div className="book-item">
                   <p className="book-title">{book.book}</p>
                 </div>
